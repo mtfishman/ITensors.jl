@@ -191,17 +191,30 @@ function ChainRulesCore.rrule(::typeof(+), x1::ITensor, x2::ITensor)
   return y, add_pullback
 end
 
-function ChainRulesCore.rrule(::typeof(itensor), x::Array, a...)
+function itensor_back(ȳ, x::AbstractArray, a...)
+  x̄ = reshape(array(unthunk(ȳ)), size(x))
+  ā = broadcast_notangent(a)
+  return (NoTangent(), x̄, ā...)
+end
+
+function ChainRulesCore.rrule(::typeof(itensor), x::AbstractArray, a...)
   y = itensor(x, a...)
   function itensor_pullback(ȳ)
-    x̄ = reshape(array(unthunk(ȳ)), size(x))
-    ā = broadcast_notangent(a)
-    return (NoTangent(), x̄, ā...)
+    return itensor_back(ȳ, x, a...)
   end
   return y, itensor_pullback
 end
 
-function ChainRulesCore.rrule(::typeof(ITensor), x::Array{<:Number}, a::Index...)
+function ChainRulesCore.rrule(::typeof(array), x::ITensor)
+  y = array(x)
+  function array_pullback(ȳ)
+    x̄ = itensor(convert(Array, ȳ), inds(x))
+    return (NoTangent(), x̄)
+  end
+  return y, array_pullback
+end
+
+function ChainRulesCore.rrule(::typeof(ITensor), x::AbstractArray{<:Number}, a::Index...)
   y = ITensor(x, a...)
   function ITensor_pullback(ȳ)
     # TODO: define `Array(::ITensor)` directly

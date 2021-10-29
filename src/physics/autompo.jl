@@ -118,11 +118,15 @@ function MPOTerm(c::Number, op1::String, ops_rest...)
   ops = (op1, ops_rest...)
   starts = findall(x -> x isa String, ops)
   N = length(starts)
-  vop = OpTerm(undef, N)
+  # XXX Zygote
+  #vop = OpTerm(undef, N)
+  vop = OpTerm[]
   for n in 1:N
     start = starts[n]
     stop = (n == N) ? lastindex(ops) : (starts[n + 1] - 1)
-    vop[n] = SiteOp(ops[start:stop]...)
+    # XXX Zygote
+    #vop[n] = SiteOp(ops[start:stop]...)
+    vop = vcat(vop, SiteOp(ops[start:stop]...))
   end
   return MPOTerm(c, vop)
 end
@@ -259,6 +263,9 @@ add!(os::OpSum, t::MPOTerm) = push!(os, t)
 
 add!(os::OpSum, args...) = add!(os, MPOTerm(args...))
 
+add(os::OpSum, t::MPOTerm) = OpSum(vcat(os.data, [t]))
+add(os::OpSum, args...) = add(os, MPOTerm(args...))
+
 """
     subtract!(ampo::OpSum,
               op1::String, i1::Int,
@@ -282,8 +289,10 @@ subtract!(os::OpSum, args...) = add!(os, -MPOTerm(args...))
 -(t::MPOTerm) = MPOTerm(-coef(t), ops(t))
 
 function (ampo::OpSum + term::Tuple)
-  ampo_plus_term = copy(ampo)
-  add!(ampo_plus_term, term...)
+  # XXX Zygote
+  #ampo_plus_term = copy(ampo)
+  #add!(ampo_plus_term, term...)
+  ampo_plus_term = add(ampo, term...)
   return ampo_plus_term
 end
 
