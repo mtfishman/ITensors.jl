@@ -18,6 +18,15 @@ export
   # Deprecated
   addblock!,
 
+  # ITensorVisualizationCore module
+  # Macros
+  @visualize,
+  @visualize!,
+  @visualize_noeval,
+  @visualize_noeval!,
+  @visualize_sequence,
+  @visualize_sequence_noeval,
+
   # ITensors.jl
   index_id_rng,
 
@@ -192,6 +201,12 @@ export
   addtags,
   hastags,
 
+  # LazyApply/LazyApply.jl
+  coefficient,
+  Scaled,
+  Sum,
+  Prod,
+
   # mps/dmrg.jl
   dmrg,
 
@@ -309,6 +324,13 @@ export
   setcutoff!,
   setnoise!,
   sweepnext,
+
+  # Ops/Ops.jl
+  Ops,
+  Op,
+
+  # Ops/trotter.jl
+  Trotter,
 
   # physics/autompo.jl
   AutoMPO,

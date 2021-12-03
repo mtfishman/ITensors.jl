@@ -200,7 +200,10 @@ end
 function ChainRulesCore.rrule(::typeof(itensor), x::AbstractArray, a...)
   y = itensor(x, a...)
   function itensor_pullback(ȳ)
-    return itensor_back(ȳ, x, a...)
+    uȳ = permute(unthunk(ȳ), a...)
+    x̄ = reshape(array(uȳ), size(x))
+    ā = broadcast_notangent(a)
+    return (NoTangent(), x̄, ā...)
   end
   return y, itensor_pullback
 end

@@ -14,6 +14,7 @@ using Compat
 using HDF5
 using KrylovKit
 using LinearAlgebra
+using NDTensors
 using PackageCompiler
 using Pkg
 using Printf
@@ -21,18 +22,25 @@ using Random
 using SerializedElementArrays
 using StaticArrays
 using TimerOutputs
-
-#####################################
-# NDTensors
-#
-include("NDTensors/NDTensors.jl")
-using .NDTensors
+using Zeros
 
 #####################################
 # ContractionSequenceOptimization
 #
 include("ContractionSequenceOptimization/ContractionSequenceOptimization.jl")
 using .ContractionSequenceOptimization
+
+#####################################
+# LazyApply
+#
+include("LazyApply/LazyApply.jl")
+using .LazyApply: Applied, Sum, ∑, Prod, ∏, Scaled, α, coefficient
+
+#####################################
+# Ops
+#
+include("Ops/Ops.jl")
+using .Ops
 
 #####################################
 # Directory helper functions (useful for
@@ -97,6 +105,11 @@ include("qn/qnindexset.jl")
 include("qn/qnitensor.jl")
 
 #####################################
+# Ops to ITensor conversions
+#
+include("Ops/ops_itensor.jl")
+
+#####################################
 # MPS/MPO
 #
 include("mps/abstractmps.jl")
@@ -131,6 +144,16 @@ include("physics/fermions.jl")
 include("physics/autompo.jl")
 
 #####################################
+# Ops to MPO conversions
+#
+include("Ops/ops_mpo.jl")
+
+#####################################
+# Trotter-Suzuki decomposition
+#
+include("Ops/trotter.jl")
+
+#####################################
 # ITensorChainRules
 #
 include("ITensorChainRules/ITensorChainRules.jl")
@@ -139,6 +162,12 @@ include("ITensorChainRules/ITensorChainRules.jl")
 # ITensorNetworkMaps
 #
 include("ITensorNetworkMaps/ITensorNetworkMaps.jl")
+
+#####################################
+# ITensorVisualizationCore
+#
+include("ITensorVisualizationCore/ITensorVisualizationCore.jl")
+using .ITensorVisualizationCore
 
 #####################################
 # Deprecations
